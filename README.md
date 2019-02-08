@@ -1,4 +1,4 @@
-# Rhoban DXL Board
+# Rhoban DXL Board / Bit-Bots firmware edition (see branch protocol2_single_bus)
 
 This communication board was designed and used by the Rhoban teams for
 humanoid robots. It features:
