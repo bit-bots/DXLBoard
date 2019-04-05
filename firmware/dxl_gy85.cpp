@@ -42,12 +42,13 @@ void gy85_begin(struct gy85 *gy85, i2c_dev *dev)
 
 void gy85_tick(struct gy85 *gy85)
 {
-    int now = millis();
-    int delta = now-gy85->lastUpdate;
-
-    gy85_update(gy85->dev, &gy85->values[gy85->pos], 0);
-    gy85_update(gy85->dev, &gy85->values[gy85->pos], 1);
+    //int now = millis();
+    //int delta = now-gy85->lastUpdate;
     
+    gy85_update(gy85->dev, &gy85->values[gy85->pos], gy85->state);
+    gy85->state = (gy85->state + 1) % 2;
+
+
     /*if (gy85->state < 2) {
         gy85_update(gy85->dev, &gy85->values[gy85->pos], gy85->state);
         gy85->state++;

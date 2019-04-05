@@ -215,25 +215,8 @@ static void dxl_serial_tick(volatile struct dxl_device *self)
 {
     struct serial *serial = (struct serial*)self->data;
 
-    // Timeout on sending packet, this should never happen
-    if (!serial->txComplete && ((millis() - serial->packetSent) > 3)) {
-        serial_received(serial);
-    }
- 
-    if (serial->txComplete) {
-        // send buffered master package
-        if(serial->buffed_master_package){
-            serial->buffed_master_package=false;
-            sendSerialPacket(serial, serial->next_packet);
-        }else{
-            int n =0;
-            // Just transmit all data on the serial bus to the usb bus
-            while (serial->port->available() && !self->packet.process) {
-                status_send_buffer[n] = serial->port->read();
-                n++;
-            }
-            SerialUSB.write(status_send_buffer, n);
-        }
+    while (serial->port->available() && !self->packet.process) {
+        dxl_packet_push_byte(&self->packet, serial->port->read());        
     }
 }
 
@@ -242,23 +225,9 @@ static void dxl_serial_tick(volatile struct dxl_device *self)
  */
 static void process(volatile struct dxl_device *self, volatile struct dxl_packet *packet)
 {
-    struct serial *serial = (struct serial*)self->data;
-    dxl_serial_tick(self);
+    struct serial *serial = (struct serial*)self->data;    
 
-    // first check if this package is for the servos
-    if(packet->id == DXL_BROADCAST || packet->id < 200){
-        // write it if possible
-        if (serial->txComplete) {
-            self->packet.dxl_state = 0;
-            self->packet.process = false;
-            sendSerialPacket(serial, packet);
-        }else{
-            // we cant write it now, put it in a buffer. It will be send when DMA is finished
-            serial->next_packet = packet;
-            serial->buffed_master_package = true;
-        }
-    }
-
+    sendSerialPacket(serial, packet);   
 }
 
 void dxl_serial_init(volatile struct dxl_device *device, int index)

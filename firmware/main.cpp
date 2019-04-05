@@ -47,7 +47,7 @@ void setup()
     dxl_bus_init(&bus);
 
     // The master of the bs is the usb serial emulator
-    dxl_usb_serial_init(&dxl_usb_serial);
+    dxl_serial_init(&dxl_usb_serial, 1);
     dxl_set_master(&bus, &dxl_usb_serial);
 
     // Adding servo pin 15 to dynamixel id 220, and pin 16 to id 221
@@ -55,7 +55,7 @@ void setup()
     // dxl_servo_init(&slaves[k++], 16, 221);
     
     // Add the Serial-forward dynamixel device as a slave
-    dxl_serial_init(&slaves[k++], 1);
+    //dxl_serial_init(&slaves[k++], 1);
     // We can only use one bus with this version (see other git branch for multi bus)
     //dxl_serial_init(&slaves[k++], 2);
     //dxl_serial_init(&slaves[k++], 3);
@@ -67,7 +67,7 @@ void setup()
     dxl_gy85_init(&slaves[k++], 241, I2C1);
 
     // Adding pins
-    dxl_pins_init(&slaves[k++], 242);
+    //dxl_pins_init(&slaves[k++], 242);
 
     // Add a magnetic coder on the bus, ID 235
     // dxl_magnetic_coder_init(&slaves[k++], 3, 235);

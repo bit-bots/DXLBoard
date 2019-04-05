@@ -52,9 +52,10 @@ void dxl_process(
             case DXL_READ_DATA:
                 // Read some data
                 if (packet->id != DXL_BROADCAST) {
+                    device->packet.instruction = 0x55;
                     // adress has two bytes
                     ui8 addr = packet->parameters[0];
-                    addr += (packet->parameters[1]<<8);
+                    addr += (packet->parameters[1]<<8);                    
                     //length has two bytes
                     unsigned int length = packet->parameters[2];
                     length += (packet->parameters[3]<<8);
